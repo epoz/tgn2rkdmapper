@@ -35,21 +35,3 @@ if __name__ == '__main__':
         sys.stderr.write('\r%s' % (idx/len(data)))
         v['parents'] = list(db_parents(v['sid']))
         es.index(index="tgn", doc_type="lemma", id=int(k), body=v)
-
-# es.search(index="tgn", body={"query": {"match": {"prefterm": ""}}})
-# q = {
-#     "bool" : {
-#         "must" : {
-#             "match" : { "prefterm" : "Amsterdam" }
-#         },
-#         "should" : [
-#             {
-#                 "term" : { "parents" : "7012149" }
-#             }
-#         ],
-#         "minimum_should_match" : 1,
-#         "boost" : 1.0
-#     }
-# }    
-# for x in es.search(index="tgn", body={"query": q})['hits']['hits']:
-#   print x['_source']['prefterm'], x['_source']['parents']
