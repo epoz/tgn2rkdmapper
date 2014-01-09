@@ -30,7 +30,7 @@ if __name__ == '__main__':
         idx = 0
         for k,v in data.items():
             idx += 1
-            sys.stderr.write('\r%s' % (idx/len(data)))
+            sys.stderr.write('\r%s' % (float(idx)/len(data)))
             v['parents'] = list(db_parents(v['sid']))
             try:
                 lat = float(v['lat'])
@@ -39,6 +39,5 @@ if __name__ == '__main__':
                 del v['lat']
                 del v['lon']
             except:
-                traceback.print_exc()
                 continue
             es.index(index="tgn", doc_type="lemma", id=int(k), body=v)
