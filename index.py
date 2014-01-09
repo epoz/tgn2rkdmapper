@@ -1,7 +1,6 @@
-import json, sys, sqlite3
+import json, sys, sqlite3, traceback
 from elasticsearch import Elasticsearch
 
-data = {}
 es = Elasticsearch()
 db = sqlite3.connect('x.sqlite3')
 cur = db.cursor()
@@ -27,11 +26,19 @@ def db_parents(anid):
 if __name__ == '__main__':
     for x in sys.argv[1:]:
         sys.stderr.write('\rLoading: %s               ' % x)
-        data.update(json.load(open(x)))
-
-    idx = 0
-    for k,v in data.items():
-        idx += 1
-        sys.stderr.write('\r%s' % (idx/len(data)))
-        v['parents'] = list(db_parents(v['sid']))
-        es.index(index="tgn", doc_type="lemma", id=int(k), body=v)
+        data = json.load(open(x))
+        idx = 0
+        for k,v in data.items():
+            idx += 1
+            sys.stderr.write('\r%s' % (idx/len(data)))
+            v['parents'] = list(db_parents(v['sid']))
+            try:
+                lat = float(v['lat'])
+                lon = float(v['lon'])
+                v['location'] = {'lat': lat, 'lon': lon}
+                del v['lat']
+                del v['lon']
+            except:
+                traceback.print_exc()
+                continue
+            es.index(index="tgn", doc_type="lemma", id=int(k), body=v)
