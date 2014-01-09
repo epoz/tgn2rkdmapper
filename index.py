@@ -30,14 +30,14 @@ if __name__ == '__main__':
         idx = 0
         for k,v in data.items():
             idx += 1
-            sys.stderr.write('\r%s' % (float(idx)/len(data)))
+            sys.stderr.write('\r%s%%' % (float(idx)/len(data)*100))
             v['parents'] = list(db_parents(v['sid']))
             try:
                 lat = float(v['lat'])
-                lon = float(v['lon'])
+                lon = float(v['long'])
                 v['location'] = {'lat': lat, 'lon': lon}
                 del v['lat']
-                del v['lon']
+                del v['long']
             except:
                 continue
             es.index(index="tgn", doc_type="lemma", id=int(k), body=v)
